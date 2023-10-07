@@ -2,7 +2,7 @@ require("@nomicfoundation/hardhat-toolbox")
 require("hardhat-deploy")
 require("@nomiclabs/hardhat-ethers")
 require("hardhat-gas-reporter")
-require("dotenv").config()  // process.env
+require("dotenv").config()  
 
 const { version } = require("chai")
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
@@ -13,7 +13,6 @@ const COINMARKETCAP = process.env.COINMARKETCAP
 // require("@nomiclabs/hardhat-etherscan")
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  // solidity: "0.8.18",
   solidity: {
     compilers: [{version: "0.8.18"}, {version: "0.6.6"}],
   },

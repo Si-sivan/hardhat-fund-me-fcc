@@ -64,11 +64,9 @@ const { developmentChains } = require("../../helper-hardhat-config")
             assert.equal((startingDeployerBalance + startingFundMeBalance).toString(), (endingDeployerBalance + gasCost).toString())
            
         })
-        // 测试当存在多个资助者时提取以太币的情况
+
         it("allows us to withdraw with multiple getFunder", async function () {
-            // Arrange
             const accounts = await ethers.getSigners()
-             // 索引为0的账户是depoyer
             for(let i = 1; i < 6; i++){
                 const fundMeConnectedContract = await fundMe.connect(
                     accounts[i]
@@ -78,16 +76,15 @@ const { developmentChains } = require("../../helper-hardhat-config")
             const startingFundMeBalance = await ethers.provider.getBalance(
                 fundMe.target
             )
-            const startingDeployerBalance = await ethers.provider.getBalance( // ethers.provider.getBalance
+            const startingDeployerBalance = await ethers.provider.getBalance( 
                 deployer
             )
-           // Act
+
            const transactionResponse = await fundMe.withdraw()
            const transactionReceipt = await transactionResponse.wait(1)
            const { gasUsed, gasPrice } = transactionReceipt
            const gasCost = gasUsed * gasPrice
-           // Assert
-           // Make sure that the getFunder are reset properly
+           
            await expect(fundMe.getFunder(0)).to.be.reverted
            for( i = 1; i < 6; i++){
             assert.equal(await fundMe.getAddressToAmountFunded(accounts[i].address), 0)
@@ -97,18 +94,13 @@ const { developmentChains } = require("../../helper-hardhat-config")
         
         it("Only allows the owner to withdraw", async function () {
             const accounts = await ethers.getSigners()
-            const attacker = accounts[1] // 假设第一个账户将成为一个随机的攻击者
+            const attacker = accounts[1] 
             const attackerConnectedContract = await fundMe.connect(attacker)
             await expect(attackerConnectedContract.withdraw()).to.be.revertedWithCustomError(fundMe, "FundMe__NotOwner")
-            //  the revertedWith, for a string message
-            //  the revertedWithCustomError, for a custom error
-
         })
 
         it("cheaperWithdraw testing...", async function () {
-            // Arrange
             const accounts = await ethers.getSigners()
-             // 索引为0的账户是depoyer
             for(let i = 1; i < 6; i++){
                 const fundMeConnectedContract = await fundMe.connect(
                     accounts[i]
@@ -118,16 +110,13 @@ const { developmentChains } = require("../../helper-hardhat-config")
             const startingFundMeBalance = await ethers.provider.getBalance(
                 fundMe.target
             )
-            const startingDeployerBalance = await ethers.provider.getBalance( // ethers.provider.getBalance
+            const startingDeployerBalance = await ethers.provider.getBalance( 
                 deployer
             )
-           // Act
            const transactionResponse = await fundMe.cheaperWithdraw()
            const transactionReceipt = await transactionResponse.wait(1)
            const { gasUsed, gasPrice } = transactionReceipt
            const gasCost = gasUsed * gasPrice
-           // Assert
-           // Make sure that the getFunder are reset properly
            await expect(fundMe.getFunder(0)).to.be.reverted
            for( i = 1; i < 6; i++){
             assert.equal(await fundMe.getAddressToAmountFunded(accounts[i].address), 0)
